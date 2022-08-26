@@ -1,6 +1,5 @@
 # -*- coding: utf8 -*-
-from tokenize import String
-import requests,json,hashlib,logging,os,time,smtplib,sys,base64
+import requests,json,hashlib,logging,time,smtplib,sys
 import requests as req
 from aip import AipOcr
 from PIL import Image
@@ -9,7 +8,7 @@ from email.mime.text import MIMEText
 
 ##智慧校园一键上报
 start_time = time.time()
-sess = requests.Session()
+sess = req.Session()
 hashcode = '1596828473201'
 headers = { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36', 'Connection': 'close' }
 
@@ -110,13 +109,12 @@ def start():
     twApi = "http://wapapi.hbei.com.cn/api/HealthReport/SaveSelfTempValue" #http://api.hbei.com.cn/api/HealthReport/SaveSelfTempValue
     tempValue = sess.get(url=twApi+'?ticket='+ticket_data+'&tempvalue=36.1', headers=headers).text
     logging.info('上报体温:' + tempValue) #打印体温上报结果
-    saveyqinfo = requests.post(url='http://wapapi.hbei.com.cn/api/HealthReport/SaveYQinfo', data=post_data, headers=headers).text
+    saveyqinfo = sess.post(url='http://wapapi.hbei.com.cn/api/HealthReport/SaveYQinfo', data=post_data, headers=headers).text
     logging.info('上报健康状态:' + saveyqinfo) #打印健康上报结果
     mailsend("","\n上报健康状态:"+saveyqinfo,"\n上报体温:"+tempValue) #发送邮件通知
-    requests.get('https://sc.ftqq.com/' + sckey + '.send?text=健康上报:'+ str(saveyqinfo) + '体温上报:'+ str(tempValue))
     listAPi = "http://wapapi.hbei.com.cn/api/HealthReport/GetTodaySelfTempList?ticket="+ticket_data
     deleteItem = "http://wapapi.hbei.com.cn/api/HealthReport/DelSelfTempRecord/"
-    listInfo= requests.get(listAPi).text
+    listInfo= sess.get(listAPi).text
     for i in json.loads(listInfo):
         strii = requests.get(deleteItem+i["id"],headers).text
         mailsend("已删除于 "+str(i['checktime']) +"上报的体温信息, 返回状态："+strii+" \nID:"+i["id"] +" \n体温: "+str(i["tempvalue"]),"","")
@@ -143,6 +141,3 @@ while ticket_data == "None":
         mailsend("啊哈哈哈哈，鸡汤来咯！"+o,"","")
 else:
     run()
-
-#if ticket_data == "None":
-#    os.system('python3 ' + sys.argv[0])
