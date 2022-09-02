@@ -1,5 +1,6 @@
 {
 	"studentID": "201901990",
 	"password": "011207",
-	"baiduocr":[{"AppID": "21926012","ApiKey": "zQVSB7Oo0QEZjHio6kPI3bRs","SecretKey": "8mgMCBONXUtr0sKVL8kftkmhYrjZ1GcE"}]
+	"baiduocr":[{"AppID": "21926012","ApiKey": "zQVSB7Oo0QEZjHio6kPI3bRs","SecretKey": "8mgMCBONXUtr0sKVL8kftkmhYrjZ1GcE"}],
+	"mail_conf": [{"stmp地址":"smtp.exmail.qq.com","发件人邮箱":"maping@mpcloud.top","邮箱授权码":"H6xrtdXPpmVXUptM","收件人邮箱":"3207754367@qq.com"}]
 }

@@ -30,10 +30,6 @@ twApi = "http://wapapi.hbei.com.cn/api/HealthReport/SaveSelfTempValue" #体温�
 
 jkApi = "http://wapapi.hbei.com.cn/api/HealthReport/SaveYQinfo" #健康状态接口
 
-send_user = "maping@mpcloud.top" # 发件邮箱
-mail_passwd = "H6xrtdXPpmVXUptM" # 授权码
-recipient = "3207754367@qq.com" #收件人邮箱
-
 options = {}
 options["language_type"] = "ENG"
 options["detect_direction"] = "true"
@@ -46,6 +42,13 @@ with open('config.json', 'r', encoding='utf8') as json_file:
     AppID = baiduocr["AppID"]
     ApiKey = baiduocr["ApiKey"]
     SecretKey = baiduocr["SecretKey"]
+    mail_conf = json_data["mail_conf"][0]
+    mail_stmp = mail_conf["stmp地址"]
+    mail_from = mail_conf["发件人邮箱"]
+    mail_passwd = mail_conf["邮箱授权码"]
+    recipient = mail_conf["收件人邮箱"]
+    
+    
 
 
 client = AipOcr(AppID,ApiKey,SecretKey)
@@ -99,14 +102,14 @@ def getTicket(): #获取ticket密钥
 def mailsend(title,yq,tv): #发送邮件通知
     mailmg = title + yq  + tv
     message = MIMEText(mailmg, 'plain' , 'utf-8')
-    message["From"] = send_user #谁来发
+    message["From"] = mail_from #谁来发
     message["To"] = "" #发给谁
     message['Subject'] = '智慧校园每日上报'
     try:
         a = smtplib.SMTP() #实例化一个smtp服务
-        a.connect('smtp.exmail.qq.com')
-        a.login(send_user,mail_passwd)
-        a.sendmail(send_user, recipient, message.as_string())#发邮件
+        a.connect(mail_stmp)
+        a.login(mail_from,mail_passwd)
+        a.sendmail(mail_from, recipient, message.as_string())#发邮件
         print ("已发送邮件通知")
         os.remove(sys.path[0] + '/1.log')
         a.quit() #关闭
@@ -158,7 +161,7 @@ ticket_data = getTicket()
 while ticket_data == "None":
     try:
         print ('正在扫描ticket')
-        ticket_data = isticket()
+        ticket_data = getTicket()
     except Exception as o:
         logging.error(o)
         print ('程序出现错误,请查看log\n'+o)
