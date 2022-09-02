@@ -26,6 +26,8 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s %(filename)s[line:%(
 
 codeurl= "http://api.hbei.com.cn/api/Login/GetCheckCodePic?hashcode=1596828473201" #验证码接口
 
+loginApi = "http://api.hbei.com.cn/api/Login/UserLoginValid" #登录接口
+
 twApi = "http://wapapi.hbei.com.cn/api/HealthReport/SaveSelfTempValue" #体温接口
 
 jkApi = "http://wapapi.hbei.com.cn/api/HealthReport/SaveYQinfo" #健康状态接口
@@ -97,12 +99,12 @@ def getTicket(): #获取ticket密钥
     post_login = {
         "CheckCode": vcode,"HashCode": "1596828473201","LoginID": user,"Password": passmd5,"LoginWay": "手机WAP" } #登录表单
     try:
-        login = sess.post(url='http://api.hbei.com.cn/api/Login/UserLoginValid', data=post_login, headers=headers)
+        login = sess.post(url=loginApi, data=post_login, headers=headers)
         abc = login.json()
         ticket_data  = str(abc["Ticket"]) #取出Ticket
     except Exception as f:
         logging.error(f)
-        print ('获取密钥时出现错误,请查看log --> ' + fileName)
+        print ('获取密钥时出现错误,请查看log\n' + f)
     return ticket_data
 
 def mailsend(title,yq,tv): #发送邮件通知
@@ -121,7 +123,7 @@ def mailsend(title,yq,tv): #发送邮件通知
         a.quit() #关闭
     except Exception as k:
         logging.error(k)
-        print ('发送邮件时出现错误\n' + o)
+        print ('发送邮件时出现错误\n' + k)
 
 def start():
     post_data = {
