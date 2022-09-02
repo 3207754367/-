@@ -36,20 +36,26 @@ options["detect_direction"] = "true"
 
 with open('config.json', 'r', encoding='utf8') as json_file:
     json_data = json.load(json_file)
+    #账号信息
     user = json_data["studentID"]
     password = json_data["password"]
+    #百度智能云
     baiduocr = json_data["baiduocr"][0]
     AppID = baiduocr["AppID"]
     ApiKey = baiduocr["ApiKey"]
     SecretKey = baiduocr["SecretKey"]
+    #邮件通知
     mail_conf = json_data["mail_conf"][0]
     mail_stmp = mail_conf["stmp地址"]
     mail_from = mail_conf["发件人邮箱"]
     mail_passwd = mail_conf["邮箱授权码"]
     recipient = mail_conf["收件人邮箱"]
+    #上报的地理位置
+    addr_info = json_data["addr_info"][0]
+    provincedm = addr_info["provincedm"]
+    citydm = addr_info["citydm"]
+    countydm = addr_info["countydm"]
     
-    
-
 
 client = AipOcr(AppID,ApiKey,SecretKey)
 
@@ -115,7 +121,7 @@ def mailsend(title,yq,tv): #发送邮件通知
         a.quit() #关闭
     except Exception as k:
         logging.error(k)
-        print ('发送邮件时出现错误,请查看log --> ' + fileName)
+        print ('发送邮件时出现错误\n' + o)
 
 def start():
     post_data = {
@@ -124,9 +130,9 @@ def start():
         'yyqzdm': '00',
         'selfgjdm': '0',
         'familyyq': '0',
-        'provincedm': '420000',
-        'citydm': '421300',
-        'countydm': '421381',
+        'provincedm': provincedm,
+        'citydm': citydm,
+        'countydm': countydm,
         'lat': '0',
         'lng': '0',
         'addrname': '0',

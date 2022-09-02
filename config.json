@@ -1,6 +1,7 @@
 {
 	"studentID": "2019xxxx学号",
 	"password": "密码",
-	"baiduocr":[{"AppID": "21926xx","ApiKey": "zQVSB7Oo0QEZjHio6xxxxx","SecretKey": "8mgMCBONXUtr0sKVL8kftxxxxxxxxxxxxxx"}],
-	"mail_conf": [{"stmp地址":"smtp.qq.com","发件人邮箱":"xxxxxxxx@qq.com","邮箱授权码":"H6xrtdxxxxxxx","收件人邮箱":"xxxxxxxxx@qq.com"}]
+	"baiduocr": [{"AppID": "21926xx","ApiKey": "zQVSB7Oo0QEZjHio6xxxxx","SecretKey": "8mgMCBONXUtr0sKVL8kftxxxxxxxxxxxxxx"}],
+	"mail_conf": [{"stmp地址":"smtp.qq.com","发件人邮箱":"xxxxxxxx@qq.com","邮箱授权码":"H6xrtdxxxxxxx","收件人邮箱":"xxxxxxxxx@qq.com"}],
+	"addr_info": [{"provincedm":"省行政区划代码", "citydm": "市行政区划代码","countydm": "县行政区划代码"}]
 }

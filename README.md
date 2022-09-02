@@ -18,7 +18,10 @@
 
 应用类型选择 [文字识别] --> [通用文字识别(标准版)] 即可
 
-创建完成后将获取到的 `AppID`  `ApiKey` `SecretKey` 填入`config.json` 
+创建完成后将获取到的 `AppID`  `ApiKey` `SecretKey` 填入`config.json` 配置文件中
+
+在国家网站查找省市县的行政区划代码 [传送门](http://xzqh.mca.gov.cn/defaultQuery?shengji=%BA%FE%B1%B1%CA%A1%A3%A8%B6%F5%A3%A9&diji=-1&xianji=-1) 
+并将其填入`config.json` 配置文件中
 
 ## 如何定时运行?
  答: 通过linux端可通过`crontab`工具实现每日自动运行,windowns端可以通过创建计划任务实现
