@@ -117,7 +117,7 @@ def mailsend(title,yq,tv): #发送邮件通知
         a.login(mail_from,mail_passwd)
         a.sendmail(mail_from, recipient, message.as_string())#发邮件
         print ("已发送邮件通知")
-        os.remove(sys.path[0] + '/1.log')
+        #os.remove(sys.path[0] + '/1.log')
         a.quit() #关闭
     except Exception as k:
         logging.error(k)
