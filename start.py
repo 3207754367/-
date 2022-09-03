@@ -1,5 +1,5 @@
 # -*- coding: utf8 -*-
-import requests,json,hashlib,logging,time,smtplib,sys,os
+import requests,json,hashlib,logging,time,smtplib,sys,os,argparse
 import requests as req
 from aip import AipOcr
 from PIL import Image
@@ -17,12 +17,15 @@ from email.mime.text import MIMEText
 #   免责声明：本脚本只做学习和交流使用，版权归原作者所有，请在下载后24小时之内自觉删除，若作商业用途，由此发生的任何侵权行为，与作者无关。
 #
 #########################################################
+
 start_time = time.time()
 sess = req.Session()
 
+ticket_data = "None" #初始化ticket
+
 headers = { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36', 'Connection': 'close' }
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s', datefmt='%a, %d %b %Y %H:%M:%S', filename=sys.path[0]+"/1.log", filemode='a')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s', datefmt='%a, %d %b %Y %H:%M:%S', filename=sys.path[0]+"/1.log", filemode='a') #日志配置
 
 codeurl= "http://api.hbei.com.cn/api/Login/GetCheckCodePic?hashcode=1596828473201" #验证码接口
 
@@ -36,30 +39,40 @@ options = {}
 options["language_type"] = "ENG"
 options["detect_direction"] = "true"
 
-with open('config.json', 'r', encoding='utf8') as json_file:
-    json_data = json.load(json_file)
-    #账号信息
-    user = json_data["studentID"]
-    password = json_data["password"]
-    #百度智能云
-    baiduocr = json_data["baiduocr"][0]
-    AppID = baiduocr["AppID"]
-    ApiKey = baiduocr["ApiKey"]
-    SecretKey = baiduocr["SecretKey"]
-    #邮件通知
-    mail_conf = json_data["mail_conf"][0]
-    mail_stmp = mail_conf["stmp地址"]
-    mail_from = mail_conf["发件人邮箱"]
-    mail_passwd = mail_conf["邮箱授权码"]
-    recipient = mail_conf["收件人邮箱"]
-    #上报的地理位置
-    addr_info = json_data["addr_info"][0]
-    provincedm = addr_info["provincedm"]
-    citydm = addr_info["citydm"]
-    countydm = addr_info["countydm"]
-    
+#设置参数名
+parser = argparse.ArgumentParser(description="示例: python start.py --c config.json")
+parser.add_argument("--c",type=str)
 
-client = AipOcr(AppID,ApiKey,SecretKey)
+#获取参数值
+args = parser.parse_args()
+config_file = args.c
+
+try:
+    with open(config_file, 'r', encoding='utf8') as json_file:
+        json_data = json.load(json_file)
+        #账号信息
+        user = json_data["studentId"]
+        password = json_data["password"]
+        #百度智能云
+        baiduocr = json_data["baiduocr"][0]
+        AppID = baiduocr["AppID"]
+        ApiKey = baiduocr["ApiKey"]
+        SecretKey = baiduocr["SecretKey"]
+        #邮件通知
+        mail_conf = json_data["mail_conf"][0]
+        mail_stmp = mail_conf["stmp地址"]
+        mail_from = mail_conf["发件人邮箱"]
+        mail_passwd = mail_conf["邮箱授权码"]
+        recipient = mail_conf["收件人邮箱"]
+        #上报的地理位置
+        addr_info = json_data["addr_info"][0]
+        provincedm = addr_info["provincedm"]
+        citydm = addr_info["citydm"]
+        countydm = addr_info["countydm"]
+        #连接百度智能云
+        client = AipOcr(AppID,ApiKey,SecretKey)
+except Exception as ijk:
+    print ("")
 
 def passwd_md5(): #将密码进行MD5 32位加密
     md5 = hashlib.md5()
@@ -123,7 +136,7 @@ def mailsend(title,yq,tv): #发送邮件通知
         a.quit() #关闭
     except Exception as k:
         logging.error(k)
-        print ('发送邮件时出现错误\n' + k)
+        print ('发送邮件时出现错误', k)
 
 def start():
     post_data = {
@@ -164,15 +177,17 @@ def run():
     print ('本次运行耗时:' +str(round(end_time,2)) + '秒')
     logging.info ('本次运行耗时:' +str(round(end_time,2)) + '秒')
 
-ticket_data = getTicket()
 
-while ticket_data == "None":
-    try:
-        print ('正在扫描ticket')
-        ticket_data = getTicket()
-    except Exception as o:
-        logging.error(o)
-        print ('程序出现错误,请查看log\n'+o)
-        mailsend("啊哈哈哈哈，鸡汤来咯！"+o,"","")
+if config_file is not None:
+    while ticket_data == "None":
+        try:
+            print ('正在扫描ticket')
+            ticket_data = getTicket()
+        except Exception as o:
+            logging.error(o)
+            print ('程序出现错误,请查看log',o)
+            mailsend("啊哈哈哈哈，鸡汤来咯","","")
+        else:
+            run()
 else:
-    run()
+    print ("请指定配置文件，例子： \n      python start.py --c config.json\n")
