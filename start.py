@@ -40,8 +40,8 @@ options["language_type"] = "ENG"
 options["detect_direction"] = "true"
 
 #设置参数名
-parser = argparse.ArgumentParser(description="示例: python start.py --c config.json")
-parser.add_argument("--c",type=str)
+parser = argparse.ArgumentParser(description="示例: python start.py -c config.json")
+parser.add_argument("-c",metavar="配置文件路径 例如: config.json",type=str)
 
 #获取参数值
 args = parser.parse_args()
@@ -190,4 +190,4 @@ if config_file is not None:
         else:
             run()
 else:
-    print ("请指定配置文件，例子： \n      python start.py --c config.json\n")
+    print ("请指定配置文件，例子： \n      python start.py -c config.json\n")
